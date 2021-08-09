@@ -178,6 +178,25 @@ float triangle_area (Point3D a, Point3D b, Point3D c)
     return area;
 }
 
+float inside_triangle(Point3D a, Point3D b, Point3D c, Point3D d)
+{
+    float A = triangle_area(a, b, c);
+    float A1 = triangle_area(a, b, d);
+    float A2 = triangle_area (a, c, d);
+    float A3 = triangle_area(b, c, d);
+
+    float A_sum = A1 + A2 + A3;
+    if (A == A_sum)
+    {
+        return 1.0;
+    }
+    else
+    {
+        return 0.0;
+    }
+
+}
+
 int main()
 {
     std::cout <<"vkt IO Writer " << std::endl;
@@ -185,8 +204,8 @@ int main()
     
 
     std::vector<Point3D> input_points;
-    float nx = 10.0f, ny =10.0f, nz = 10.0f; //domain size
-    float sx = 1.0f, sy = 1.0f, sz = 1.0f; //Spacing size
+    float nx = 100.0f, ny =100.0f, nz = 1.0f; //domain size
+    float sx = 0.5f, sy = 0.5f, sz = 1.0f; //Spacing size
     float n = (nx/sx)*(ny/sy)*(nz/sz); //total no of points;
     std :: cout << "Creating cartesian mesh is started......." <<std::endl;
     for (float z = 0.0; z < nz; z += sz)
@@ -209,28 +228,30 @@ int main()
     float j;
     Point3D cm_(50,50,0);
     float r_= 15.0;
+    Point3D a(20, 20, 0), b(70, 20, 0), c(60, 50, 0);
     for (auto &x: input_points)
     {
         Point3D m(x.getX(), x.getY(), x.getZ());
 
         j = circle(m, cm_, r_);
         // j =  square(m, cm_, r_ );
+        j = inside_triangle(a, b, c, m);
         sv.push_back(j);
 
     }
     
     // WriteStructuredPoints(10, 5, 1, 0, 0, 0, 1, 1, 1); //DIMENSIONS nx ny nz, ORIGIN xyz SPACING sx sy sz
-    // WriteStructuredGrid(nx, ny, nz, n, input_points, sv );
+    WriteStructuredGrid(nx, ny, nz, n, input_points, sv );
     // WriteRectilinearGrid(nx, ny, nz, n, input_points, sv);
 
 
     
 
 
-    Point3D a(3, 8, 1), b(-4, 2, 1), c(5, 1, 2);
+    // Point3D a(3, 8, 1), b(-4, 2, 1), c(5, 1, 2);
 
-    float area = triangle_area(a, b, c);
-    std::cout << "Triangle area: " << " " <<area <<std::endl; 
+    // float area = triangle_area(a, b, c);
+    // std::cout << "Triangle area: " << " " <<area <<std::endl; 
     return 0;
         
 }
